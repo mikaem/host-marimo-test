@@ -255,7 +255,7 @@ def _(trainer, u):
 def _(jnp, mesh, sp, t, u, x):
     from jaxfun.utils import lambdify
 
-    c = 1.0
+    c = 1
     x0 = mesh.get_points(1000, domain="all", kind="uniform")
     ue = sp.sin(x) * (sp.sin(c*t) + sp.cos(c * t))
     uej = lambdify(x, ue.subs(t, 0))(x0[:, 0])
