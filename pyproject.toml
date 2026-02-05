@@ -37,8 +37,9 @@ dev = [
   "shapely>=2.1.0",
   "ty>=0.0.13",
   "urllib3>=2.6.3",
+  "jaxfun>=0.1.0",
 ]
 
 [tool.uv.sources]
 soap-jax = { git = "https://github.com/mikaem/SOAP_JAX" }
-# soap-jax = { git = "https://github.com/haydn-jones/SOAP_JAX" }
+jaxfun = { git = "https://github.com/spectralDNS/jaxfun" }
