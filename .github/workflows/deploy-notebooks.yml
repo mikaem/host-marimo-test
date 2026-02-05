@@ -1,0 +1,136 @@
+name: Deploy Marimo Notebooks to GitHub Pages
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+
+concurrency:
+  group: "pages"
+  cancel-in-progress: false
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+      
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.11'
+        
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+        
+    - name: Create output directory
+      run: mkdir -p html_output
+      
+    - name: Convert marimo notebooks to HTML
+      run: |
+        echo "Converting marimo notebooks to HTML..."
+        for notebook in notebooks/*.py; do
+          if [ -f "$notebook" ]; then
+            filename=$(basename "$notebook" .py)
+            echo "Converting $notebook to html_output/${filename}.html"
+            marimo export html "$notebook" -o "html_output/${filename}.html"
+          fi
+        done
+        
+    - name: Create index.html
+      run: |
+        cat > html_output/index.html << 'INDEXEOF'
+        <!DOCTYPE html>
+        <html lang="en">
+        <head>
+            <meta charset="UTF-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <title>Marimo Notebooks</title>
+            <style>
+                body {
+                    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+                    max-width: 800px;
+                    margin: 0 auto;
+                    padding: 40px 20px;
+                    line-height: 1.6;
+                    color: #333;
+                }
+                h1 {
+                    color: #2c3e50;
+                    border-bottom: 3px solid #3498db;
+                    padding-bottom: 10px;
+                }
+                .notebook-list {
+                    list-style: none;
+                    padding: 0;
+                }
+                .notebook-item {
+                    margin: 20px 0;
+                    padding: 20px;
+                    background: #f8f9fa;
+                    border-radius: 8px;
+                    transition: transform 0.2s, box-shadow 0.2s;
+                }
+                .notebook-item:hover {
+                    transform: translateY(-2px);
+                    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+                }
+                .notebook-link {
+                    color: #3498db;
+                    text-decoration: none;
+                    font-size: 1.2em;
+                    font-weight: 500;
+                }
+                .notebook-link:hover {
+                    color: #2980b9;
+                    text-decoration: underline;
+                }
+                footer {
+                    margin-top: 60px;
+                    padding-top: 20px;
+                    border-top: 1px solid #ddd;
+                    text-align: center;
+                    color: #777;
+                }
+            </style>
+        </head>
+        <body>
+            <h1>📓 Marimo Notebooks</h1>
+            <p>Welcome! Below you'll find interactive marimo notebooks exported as HTML.</p>
+            <ul class="notebook-list">
+        INDEXEOF
+        
+        for html in html_output/*.html; do
+          if [ -f "$html" ] && [ "$html" != "html_output/index.html" ]; then
+            filename=$(basename "$html")
+            name=$(basename "$html" .html)
+            echo "        <li class=\"notebook-item\"><a href=\"$filename\" class=\"notebook-link\">$name</a></li>" >> html_output/index.html
+          fi
+        done
+        
+        cat >> html_output/index.html << 'INDEXEOF'
+            </ul>
+            <footer>
+                <p>Generated with <a href="https://marimo.io" target="_blank">marimo</a></p>
+            </footer>
+        </body>
+        </html>
+        INDEXEOF
+        
+    - name: Deploy to GitHub Pages
+      uses: peaceiris/actions-gh-pages@v4
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        publish_dir: ./html_output
+        publish_branch: gh-pages
+        force_orphan: true
