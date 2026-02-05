@@ -6,7 +6,7 @@ This repository demonstrates how to host [marimo](https://marimo.io) notebooks o
 
 - `notebooks/` - Contains marimo notebook files (`.py` format)
 - `.github/workflows/deploy-notebooks.yml` - GitHub Actions workflow for automatic deployment
-- `requirements.txt` - Python dependencies
+- `pyproject.toml` - Project metadata and dependencies (managed with uv)
 
 ## 🚀 How It Works
 
@@ -26,7 +26,7 @@ This repository demonstrates how to host [marimo](https://marimo.io) notebooks o
 ### Prerequisites
 
 ```bash
-pip install -r requirements.txt
+uv sync --group dev
 ```
 
 
@@ -84,7 +84,7 @@ https://mikaem.github.io/host-marimo-test/
 
 ### Adding More Dependencies
 
-Edit `requirements.txt` to add more Python packages needed by your notebooks.
+Use `uv add <package>` (or `uv add --group dev <package>` for dev-only) to manage dependencies in `pyproject.toml`, then run `uv sync`.
 
 ### Modifying the Workflow
 
