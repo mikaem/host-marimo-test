@@ -23,6 +23,7 @@ dependencies = [
   "optax>=0.2.6",
   "pre-commit>=4.3",
   "sympy>=1.13.3",
+  "pandas>=2.0",
 ]
 
 [dependency-groups]
