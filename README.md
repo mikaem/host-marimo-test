@@ -11,7 +11,7 @@ This repository demonstrates how to host [marimo](https://marimo.io) notebooks o
 ## 🚀 How It Works
 
 1. **Main Branch**: Store your marimo notebooks as Python files in the `notebooks/` directory
-2. **Automatic Conversion**: On every push to `main`, GitHub Actions converts notebooks to HTML
+2. **Automatic Conversion**: On every push to `main`, GitHub Actions converts modified notebooks to HTML
 3. **GitHub Pages**: The HTML files are automatically deployed to the `gh-pages` branch and served via GitHub Pages
 
 ## 📝 Adding New Notebooks
