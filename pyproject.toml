@@ -38,6 +38,7 @@ dev = [
   "ty>=0.0.13",
   "urllib3>=2.6.3",
   "jaxfun>=0.1.0",
+  "scipy==1.16.0"
 ]
 
 [tool.uv.sources]
