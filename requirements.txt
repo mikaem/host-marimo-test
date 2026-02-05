@@ -1,4 +1,0 @@
-marimo>=0.9.30
-numpy>=1.24.0
-matplotlib>=3.7.0
-pandas>=2.0.0
