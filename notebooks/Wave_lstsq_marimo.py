@@ -324,7 +324,7 @@ def _(
 
     unm1 = unm1_
     un = u(xi)
-    Nsteps = 80
+    Nsteps = 20
     for _step in range(1, Nsteps):
         print(f'Time step {_step + 1}/{Nsteps}')
         loss_fn.residuals[1].target = 2 * un - unm1 + target.evaluate(u.module)
